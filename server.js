@@ -1,7 +1,7 @@
 require('dotenv').config();
 const path=require('path'),crypto=require('crypto'),express=require('express'),mysql=require('mysql2/promise'),multer=require('multer');
 const app=express();
-const db=mysql.createPool({host:process.env.DB_HOST,user:process.env.DB_USER,password:process.env.DB_PASS,database:process.env.DB_NAME,charset:'utf8mb4',connectionLimit:10});
+const db=mysql.createPool({host:process.env.DB_HOST,port: Number(process.env.DB_PORT || 21377),user:process.env.DB_USER,password:process.env.DB_PASS,database:process.env.DB_NAME,charset:'utf8mb4',connectionLimit:10});
 const upload=multer({storage:multer.diskStorage({destination:path.join(__dirname,'public/uploads'),
   filename:(r,f,cb)=>cb(null,Date.now()+'_'+crypto.randomBytes(4).toString('hex')+path.extname(f.originalname).toLowerCase())}),
   limits:{fileSize:5*1024*1024},fileFilter:(r,f,cb)=>cb(null,/^image\/(jpeg|png|webp)$/.test(f.mimetype))});
