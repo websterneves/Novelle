@@ -3,7 +3,7 @@ const fs=require('fs'),mysql=require('mysql2/promise');
 const cats={aneis:['Anéis','Anel'],brincos:['Brincos','Brinco'],colares:['Colares','Colar'],conjuntos:['Conjuntos','Conjunto'],pulseiras:['Pulseiras','Pulseira']};
 const pr=s=>s?parseFloat(s.replace(',','.')):null;
 (async()=>{
-  const db=await mysql.createConnection({host:process.env.DB_HOST,user:process.env.DB_USER,password:process.env.DB_PASS,multipleStatements:true});
+  const db=await mysql.createConnection({host:process.env.DB_HOST,port: 21377,user:process.env.DB_USER,password:process.env.DB_PASS,multipleStatements:true});
   await db.query(fs.readFileSync('schema.sql','utf8'));await db.query('USE '+process.env.DB_NAME);
   const data=JSON.parse(fs.readFileSync('seed/data.json','utf8'));
   for(const [slug,[nome,sing]] of Object.entries(cats)){
