@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Produto · Admin</title><link rel="stylesheet" href="/style.css"></head><body class="admin">
+<div class="top"><h1><%= p.id?'Editar produto':'Novo produto' %></h1><a href="/admin">← Voltar</a></div>
+<% if(erro){ %><p class="erro"><%= erro %></p><% } %>
+<form class="edit" method="post" enctype="multipart/form-data" action="/admin/produtos<%= p.id?'/'+p.id:'' %>">
+<label>Categoria<select name="categoria_id" id="cat" required><% cats.forEach(c=>{ %><option value="<%= c.id %>" data-sing="<%= c.singular %>" <%= Number(p.categoria_id)===c.id?'selected':'' %>><%= c.nome %></option><% }) %></select></label>
+<label>Código (nº no catálogo)<input type="number" id="codigo" name="codigo" min="1" required value="<%= p.codigo||'' %>"></label>
+<label>Nome<input name="nome" id="nome" maxlength="120" required value="<%= p.nome||'' %>"></label>
+<label>Descrição<textarea name="descricao" rows="3"><%= p.descricao||'' %></textarea></label>
+<label>Preço ouro (R$)<input name="preco_ouro" inputmode="decimal" value="<%= p.preco_ouro!=null?money(p.preco_ouro):'' %>"></label>
+<label>Preço prata (R$)<input name="preco_prata" inputmode="decimal" value="<%= p.preco_prata!=null?money(p.preco_prata):'' %>"></label>
+<label>Tamanhos (anéis)<input name="tamanhos" value="<%= p.tamanhos||'' %>"></label>
+<label>Foto <% if(p.imagem){ %><img src="/uploads/<%= p.imagem %>" width="120" alt=""><% } %><input type="file" name="imagem" accept="image/jpeg,image/png,image/webp"></label>
+<label class="chk"><input type="checkbox" name="ativo" <%= Number(p.ativo)?'checked':'' %>> Ativo (visível na vitrine)</label>
+<button class="btn">Salvar</button></form>
+<% if(p.id){ %><form method="post" action="/admin/produtos/<%= p.id %>/excluir" onsubmit="return confirm('Excluir definitivamente?')"><button class="danger">Excluir produto</button></form><% } %><% if(!p.id){ %><script>
+const cat=document.getElementById('cat'),cod=document.getElementById('codigo'),nome=document.getElementById('nome');
+let nomeEditado=false;nome.addEventListener('input',()=>nomeEditado=true);
+cat.addEventListener('change',async()=>{
+  const r=await fetch('/admin/api/proximo-codigo?categoria_id='+cat.value);const {codigo}=await r.json();
+  cod.value=codigo;
+  if(!nomeEditado)nome.value=cat.selectedOptions[0].dataset.sing+' '+String(codigo).padStart(2,'0');
+});
+</script><% } %>
+</body></html>

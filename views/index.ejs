@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Novelle Semijoias</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css"></head><body>
+<header class="hero"><h1>Novelle</h1><p class="tag">SEMIJOIAS</p></header>
+<nav class="tabs"><a href="/" class="<%= !cat?'on':'' %>">Todos</a>
+<% cats.forEach(c=>{ %><a href="/?cat=<%= c.slug %>" class="<%= cat&&cat.id===c.id?'on':'' %>"><%= c.nome %></a><% }) %></nav>
+<div class="bar"><span><%= produtos.length %> peças</span>
+<form><% if(cat){ %><input type="hidden" name="cat" value="<%= cat.slug %>"><% } %>
+<select name="ord" onchange="this.form.submit()"><option value="">Catálogo</option><option value="asc" <%= ord==='asc'?'selected':'' %>>Menor preço</option><option value="desc" <%= ord==='desc'?'selected':'' %>>Maior preço</option></select></form></div>
+<main class="grid">
+<% produtos.forEach(p=>{ const msg='Olá! Quero solicitar: '+p.nome+(p.preco_ouro?' – ouro R$ '+money(p.preco_ouro):'')+(p.preco_prata?' – prata R$ '+money(p.preco_prata):''); %>
+<article class="card"><div class="pic"><% if(p.imagem){ %><img loading="lazy" src="/uploads/<%= p.imagem %>" alt="<%= p.nome %>"><% } %></div>
+<h2><%= p.nome %></h2><% if(p.descricao){ %><p class="muted"><%= p.descricao %></p><% } %>
+<ul class="prices"><% if(p.preco_ouro){ %><li><i class="dot o"></i>Ouro<b>R$ <%= money(p.preco_ouro) %></b></li><% } %><% if(p.preco_prata){ %><li><i class="dot p"></i>Prata<b>R$ <%= money(p.preco_prata) %></b></li><% } %></ul>
+<% if(p.tamanhos){ %><p class="muted">Tamanhos: <%= p.tamanhos %></p><% } %>
+<a class="btn" target="_blank" rel="noopener" href="https://wa.me/<%= whatsapp %>?text=<%= encodeURIComponent(msg) %>">Solicitar</a></article>
+<% }) %></main>
+<% if(!produtos.length){ %><p class="empty">Nenhuma peça disponível nesta categoria no momento.</p><% } %>
+</body></html>

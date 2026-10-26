@@ -1,0 +1,25 @@
+CREATE DATABASE IF NOT EXISTS novelle CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE novelle;
+CREATE TABLE IF NOT EXISTS categorias (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(40) NOT NULL UNIQUE,
+  nome VARCHAR(80) NOT NULL,
+  singular VARCHAR(40) NOT NULL
+);
+CREATE TABLE IF NOT EXISTS produtos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  categoria_id INT NOT NULL,
+  codigo INT NOT NULL,
+  nome VARCHAR(120) NOT NULL,
+  descricao TEXT NULL,
+  preco_ouro DECIMAL(10,2) NULL,
+  preco_prata DECIMAL(10,2) NULL,
+  tamanhos VARCHAR(120) NULL,
+  imagem VARCHAR(200) NULL,
+  ativo TINYINT(1) NOT NULL DEFAULT 1,
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (categoria_id) REFERENCES categorias(id),
+  UNIQUE KEY uk_cat_codigo (categoria_id, codigo),
+  INDEX idx_ativo (ativo)
+);

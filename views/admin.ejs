@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin · Novelle</title><link rel="stylesheet" href="/style.css"></head><body class="admin">
+<div class="top"><h1>Administração</h1><span><a href="/" target="_blank">Ver vitrine</a> <a class="btn" href="/admin/produtos/novo">+ Novo produto</a></span></div>
+<form class="filters"><select name="cat"><option value="">Todas as categorias</option><% cats.forEach(c=>{ %><option value="<%= c.slug %>" <%= f.cat===c.slug?'selected':'' %>><%= c.nome %></option><% }) %></select>
+<select name="status"><option value="">Todos</option><option value="ativos" <%= f.status==='ativos'?'selected':'' %>>Ativos</option><option value="inativos" <%= f.status==='inativos'?'selected':'' %>>Inativos</option></select>
+<input name="q" placeholder="Nome ou código" value="<%= f.q||'' %>"><button class="btn">Filtrar</button></form>
+<div class="bulk"><% cats.forEach(c=>{ %><span><%= c.nome %>:
+<form method="post" action="/admin/categoria/<%= c.id %>/ativar"><button>ativar todos</button></form>
+<form method="post" action="/admin/categoria/<%= c.id %>/desativar" onsubmit="return confirm('Desativar todos os itens de <%= c.nome %>?')"><button>desativar todos</button></form></span><% }) %></div>
+<p class="muted"><%= produtos.length %> itens</p>
+<table><thead><tr><th></th><th>Cód.</th><th>Nome</th><th>Categoria</th><th>Ouro</th><th>Prata</th><th>Ativo</th><th></th></tr></thead><tbody>
+<% produtos.forEach(p=>{ %><tr class="<%= p.ativo?'':'off' %>">
+<td><% if(p.imagem){ %><img src="/uploads/<%= p.imagem %>" width="48" height="40" alt=""><% } %></td><td><%= p.codigo %></td><td><%= p.nome %></td><td><%= p.cat_nome %></td>
+<td><%= p.preco_ouro?money(p.preco_ouro):'—' %></td><td><%= p.preco_prata?money(p.preco_prata):'—' %></td>
+<td><form method="post" action="/admin/produtos/<%= p.id %>/toggle"><button class="sw <%= p.ativo?'on':'' %>" aria-label="<%= p.ativo?'Desativar':'Ativar' %> <%= p.nome %>"><%= p.ativo?'Ativo':'Inativo' %></button></form></td>
+<td><a href="/admin/produtos/<%= p.id %>">Editar</a></td></tr><% }) %></tbody></table></body></html>
